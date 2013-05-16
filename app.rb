@@ -3,6 +3,8 @@ require 'sinatra/json'
 require 'sinatra/reloader' if development?
 require 'multi_json'
 require 'open-uri'
+require 'uri'
+require 'titleize'
 
 # Root
 get '/' do
@@ -27,10 +29,10 @@ get '/traffic' do
   }
 
   params.each do |key, gauge_id|
-    gauge   = JSON.parse(open("https://secure.gaug.es/gauges/#{gauge_id}",
+    gauge   = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}",
                               "X-Gauges-Token" => api_key).read)["gauge"]
 
-    traffic = JSON.parse(open("https://secure.gaug.es/gauges/#{gauge_id}/traffic",
+    traffic = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}/traffic",
                               "X-Gauges-Token" => api_key).read)["traffic"]
 
     views = { title: gauge["title"], datapoints: [] }
@@ -43,5 +45,42 @@ get '/traffic' do
     graph[:graph][:datasequences] << views
   end
   
+  json graph
+end
+
+# Subscriber graph with URI.LV
+get '/subscribers/graph' do
+  api_key = params[:api_key]
+  params.delete('api_key')
+  token = params[:token]
+  params.delete('token')
+
+  uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
+
+  graph = {
+    graph: {
+      title: 'Subscriber',
+      type: "line",
+      refreshEveryNSeconds: 300,
+      datasequences: [
+  
+      ]
+    }
+  }
+
+  params.each do |key, feed|
+    parameters = { :key => api_key, :token => token, :feed => feed }
+    uri.query = URI.encode_www_form(parameters)
+    stats = MultiJson.load(uri.open.read)["stats"]
+    subscribers = { title: feed.titleize.gsub('-', ' '), datapoints: [] }
+    stats.each do |entry|
+      subscribers[:datapoints] << {
+        title: Time.at(entry["day"]).strftime("%e.%-m."),
+        value: entry['greader'] + entry['other'] + entry['direct']
+      }
+    end
+    graph[:graph][:datasequences] << subscribers
+  end
+
   json graph
 end
