@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Cache-control" content="no-cache" />
+  <title>Subscribers</title>
+  <style type="text/css">
+    @font-face {
+      font-family: "Roadgeek2005SeriesD";
+      src: url("http://panic.com/fonts/Roadgeek 2005 Series D/Roadgeek 2005 Series D.otf");
+    }
+    body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
+      margin: 0;
+      padding: 0;
+    }
+    fieldset,img {
+      border: 0;
+    }
+    html, body, #main{
+      overflow: hidden;
+    }
+    body {
+      font-family: 'Roadgeek2005SeriesD', sans-serif;
+      color: white;
+    }
+    body, html, #main
+    {
+      background: transparent !important;
+    }
+    #subscribers_container {
+      padding: 0 16px 16px 16px;
+      text-align: center;
+    }
+    h2 {
+      width: 180px;
+      margin: 0px auto;
+      padding-top: 16px;
+      padding-bottom: 16px;
+      font-size: 24px;
+      font-weight: normal;
+      line-height: 24px;
+      color: rgb(0, 159, 153);
+      text-transform: uppercase;
+    }
+    p {
+      padding: 8px 0;
+      font-size: 24px;
+      line-height: 1.4;
+      font-weight: normal;
+      color: #fff;
+      text-align: left;
+      border-top: 1px solid #333;
+    }
+    p span {
+      text-align: center;
+      padding-left: 8px;
+      float: right;
+    }
+  </style>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+    function refresh()
+    {
+        var req = new XMLHttpRequest();
+        console.log("Refreshing Count...");
+      
+        req.onreadystatechange=function() {
+          if (req.readyState==4 && req.status==200) {
+            document.getElementById('subscribers_container').innerText = '';
+            processData(req.responseText);
+          }
+        }
+        req.open("GET", '<%= @uri %>', true);
+        req.send(null);
+    }
+
+    function init()
+    {
+      // Change page background to black if the URL contains "localhost", for debugging while developing on your computer
+      if (document.location.hostname == "localhost")
+      {
+        document.getElementById("subscribers_container").style.backgroundColor = 'black';
+      }
+      
+      refresh()
+      var int=self.setInterval(function(){refresh()},1200000);
+    }
+
+    function processData(json) {
+      var data = jQuery.parseJSON(json);
+      $.each(data, function(i, entry) {
+        $('#subscribers_container').append('<p>'+entry.feed+'<span>'+entry.count+'</span></p>');
+      });
+    }
+
+  </script>
+</head>
+<body onload="init()">
+  <div id="main">
+    <h2>Subscribers</h2>
+    <div id="subscribers_container"></div>
+  </div>
+</body>
+</html>

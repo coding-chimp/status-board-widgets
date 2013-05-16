@@ -84,3 +84,32 @@ get '/subscribers/graph' do
 
   json graph
 end
+
+# Subscriber count with URI.LV
+get '/subscribers/count' do
+  api_key = params[:api_key]
+  params.delete('api_key')
+  token = params[:token]
+  params.delete('token')
+
+  uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
+  array = []
+
+  params.each do |key, feed|
+    parameters = { :key => api_key, :token => token, :feed => feed }
+    uri.query = URI.encode_www_form(parameters)
+    stats = MultiJson.load(uri.open.read)["stats"].first
+    subscribers = stats['greader'] + stats['other'] + stats['direct']
+    array << {
+      feed: feed.titleize.gsub('-', ' '),
+      count: subscribers
+    }
+  end
+
+  json array
+end
+
+get '/subscribers/table' do
+  @uri = "/subscribers/count?" + URI.encode_www_form(params)
+  erb :subscribers
+end
