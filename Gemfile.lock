@@ -3,7 +3,7 @@ GEM
   specs:
     backports (3.3.0)
     eventmachine (1.0.3)
-    json (1.7.7)
+    json (1.8.0)
     multi_json (1.7.3)
     open-uri-cached (0.0.5)
     rack (1.5.2)
@@ -29,7 +29,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  json (~> 1.7.7)
+  json (~> 1.8.0)
   multi_json
   open-uri-cached
   sinatra
