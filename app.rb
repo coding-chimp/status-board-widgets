@@ -60,7 +60,7 @@ get '/subscribers/graph' do
     graph: {
       title: 'Subscriber',
       type: "line",
-      refreshEveryNSeconds: 300,
+      refreshEveryNSeconds: 3600,
       datasequences: [
   
       ]
@@ -92,20 +92,23 @@ get '/subscribers/count' do
   params.delete('token')
 
   uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
-  array = []
+  feeds = []
 
   params.each do |key, feed|
     parameters = { :key => api_key, :token => token, :feed => feed }
     uri.query = URI.encode_www_form(parameters)
     stats = MultiJson.load(uri.open.read)["stats"].first
     subscribers = stats['greader'] + stats['other'] + stats['direct']
-    array << {
-      feed: feed.titleize.gsub('-', ' '),
+    feeds << {
+      name: feed.titleize.gsub('-', ' '),
       count: subscribers
     }
+
   end
 
-  json array
+#  json array
+  @feeds = feeds
+  erb :subscribers_count
 end
 
 get '/subscribers/table' do

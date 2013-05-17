@@ -67,8 +67,7 @@
       
         req.onreadystatechange=function() {
           if (req.readyState==4 && req.status==200) {
-            document.getElementById('subscribers_container').innerText = '';
-            processData(req.responseText);
+            document.getElementById('subscribers_container').innerHTML = req.responseText
           }
         }
         req.open("GET", '<%= @uri %>', true);
@@ -77,21 +76,14 @@
 
     function init()
     {
-      // Change page background to black if the URL contains "localhost", for debugging while developing on your computer
-      if (document.location.hostname == "localhost")
+      // Change page background to black if the URL contains ".dev", for debugging while developing on your computer
+      if (document.location.hostname.indexOf(".dev") != -1)
       {
         document.getElementById("subscribers_container").style.backgroundColor = 'black';
       }
       
       refresh()
       var int=self.setInterval(function(){refresh()},1200000);
-    }
-
-    function processData(json) {
-      var data = jQuery.parseJSON(json);
-      $.each(data, function(i, entry) {
-        $('#subscribers_container').append('<p>'+entry.feed+'<span>'+entry.count+'</span></p>');
-      });
     }
 
   </script>
