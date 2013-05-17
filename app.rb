@@ -2,8 +2,7 @@ require 'sinatra'
 require 'sinatra/json'
 require 'sinatra/reloader' if development?
 require 'multi_json'
-require 'open-uri'
-require 'uri'
+require 'open-uri/cached'
 require 'titleize'
 
 # Root
