@@ -106,7 +106,6 @@ get '/subscribers/count' do
 
   end
 
-#  json array
   @feeds = feeds
   erb :subscribers_count
 end
