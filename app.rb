@@ -15,7 +15,7 @@ end
 # Traffic with gaug.es
 get '/traffic' do
   api_key = params[:api_key]
-  params.delete('api_key')
+  gauges_params = params.select { |k, v| k.include?("page") }
 
   graph = {
     graph: {
@@ -29,7 +29,7 @@ get '/traffic' do
     }
   }
 
-  params.each do |key, gauge_id|
+  gauges_params.each do |key, gauge_id|
     gauge   = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}",
                               "X-Gauges-Token" => api_key).read)["gauge"]
 
@@ -52,9 +52,8 @@ end
 # Subscriber graph with URI.LV
 get '/subscribers/graph' do
   api_key = params[:api_key]
-  params.delete('api_key')
   token = params[:token]
-  params.delete('token')
+  feed_params = params.select { |k, v| k.include?("feed") }
 
   uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
 
@@ -69,7 +68,7 @@ get '/subscribers/graph' do
     }
   }
 
-  params.each do |key, feed|
+  feed_params.each do |key, feed|
     parameters = { :key => api_key, :token => token, :feed => feed }
     uri.query = URI.encode_www_form(parameters)
     stats = MultiJson.load(uri.open.read)["stats"]
@@ -89,14 +88,13 @@ end
 # Subscriber count with URI.LV
 get '/subscribers/count' do
   api_key = params[:api_key]
-  params.delete('api_key')
   token = params[:token]
-  params.delete('token')
+  feed_params = params.select { |k, v| k.include?("feed") }
 
   uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
   feeds = []
 
-  params.each do |key, feed|
+  feed_params.each do |key, feed|
     parameters = { :key => api_key, :token => token, :feed => feed }
     uri.query = URI.encode_www_form(parameters)
     stats = MultiJson.load(uri.open.read)["stats"].first
