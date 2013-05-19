@@ -108,7 +108,7 @@ get '/subscribers/count' do
 
   end
 
-  @feeds = feeds
+  @feeds = feeds.sort_by { |k| k[:count] }.reverse
   erb :subscribers_count
 end
 
