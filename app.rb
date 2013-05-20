@@ -2,7 +2,6 @@ require 'sinatra'
 require 'sinatra/json'
 require 'sinatra/reloader' if development?
 require 'multi_json'
-#require 'open-uri/cached'
 require 'open-uri'
 require 'titleize'
 require 'date'
@@ -36,7 +35,11 @@ get '/traffic' do
     traffic = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}/traffic",
                               "X-Gauges-Token" => api_key).read)["traffic"]
 
-    views = { title: gauge["title"], datapoints: [] }
+    if gauges_params.size == 1
+      views = { title: "Views", datapoints: [] }
+    else
+      views = { title: gauge["title"], datapoints: [] }
+    end
     traffic.each do |entry|
       views[:datapoints] << {
         title: DateTime.parse(entry["date"]).strftime("%e.%-m."),
@@ -44,6 +47,16 @@ get '/traffic' do
       }
     end
     graph[:graph][:datasequences] << views
+    unless gauges_params.size > 1
+      people = { title: "People", datapoints: [] }
+      traffic.each do |entry|
+        people[:datapoints] << {
+          title: DateTime.parse(entry["date"]).strftime("%e.%-m."),
+          value: entry["people"]
+        }
+      end
+      graph[:graph][:datasequences] << people
+    end
   end
   
   json graph
