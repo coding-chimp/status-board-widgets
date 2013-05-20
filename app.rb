@@ -37,6 +37,7 @@ get '/traffic' do
 
     if gauges_params.size == 1
       views = { title: "Views", datapoints: [] }
+      graph[:graph][:title] = gauge["title"]
     else
       views = { title: gauge["title"], datapoints: [] }
     end
@@ -48,6 +49,7 @@ get '/traffic' do
     end
     graph[:graph][:datasequences] << views
     unless gauges_params.size > 1
+
       people = { title: "People", datapoints: [] }
       traffic.each do |entry|
         people[:datapoints] << {
@@ -85,14 +87,42 @@ get '/subscribers/graph' do
     parameters = { :key => api_key, :token => token, :feed => feed }
     uri.query = URI.encode_www_form(parameters)
     stats = MultiJson.load(uri.open.read)["stats"]
-    subscribers = { title: feed.titleize.gsub('-', ' '), datapoints: [] }
-    stats.each do |entry|
-      subscribers[:datapoints] << {
-        title: Time.at(entry["day"]).strftime("%e.%-m."),
-        value: entry['greader'] + entry['other'] + entry['direct']
-      }
+    if feed_params.size == 1
+      graph[:graph][:title] = feed.titleize.gsub('-', ' ')
+      greader = { title: "Google Reader", datapoints: [] }
+      stats.each do |entry|
+        greader[:datapoints] << {
+          title: Time.at(entry["day"]).strftime("%e.%-m."),
+          value: entry['greader']
+        }
+      end
+      graph[:graph][:datasequences] << greader
+      other = { title: "Other", datapoints: [] }
+      stats.each do |entry|
+        other[:datapoints] << {
+          title: Time.at(entry["day"]).strftime("%e.%-m."),
+          value: entry['other']
+        }
+      end
+      graph[:graph][:datasequences] << other
+      direct = { title: "Direct", datapoints: [] }
+      stats.each do |entry|
+        direct[:datapoints] << {
+          title: Time.at(entry["day"]).strftime("%e.%-m."),
+          value: entry['direct']
+        }
+      end
+      graph[:graph][:datasequences] << direct
+    else
+      subscribers = { title: feed.titleize.gsub('-', ' '), datapoints: [] }
+      stats.each do |entry|
+        subscribers[:datapoints] << {
+          title: Time.at(entry["day"]).strftime("%e.%-m."),
+          value: entry['greader'] + entry['other'] + entry['direct']
+        }
+      end
+      graph[:graph][:datasequences] << subscribers
     end
-    graph[:graph][:datasequences] << subscribers
   end
 
   json graph
