@@ -86,7 +86,7 @@ get '/subscribers/graph' do
   feed_params.each do |key, feed|
     parameters = { :key => api_key, :token => token, :feed => feed }
     uri.query = URI.encode_www_form(parameters)
-    stats = MultiJson.load(uri.open.read)["stats"]
+    stats = MultiJson.load(uri.open.read)["stats"].reverse
     if feed_params.size == 1
       graph[:graph][:title] = feed.titleize.gsub('-', ' ')
       greader = { title: "Google Reader", datapoints: [] }
