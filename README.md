@@ -16,11 +16,15 @@ The `/traffic` endpoint returns a graph with page views for one or multiple gaug
 
     http://your-app.herokuapp.com/traffic?api_key=<your-api-key>&gauge1=<your-first-gauge-id>&gauge2=<your-second-gauge-id>
 
+For a single gauge it will display views + people and for multiple gauges it will only display the views. As a default the graph will be displayed as a linegraph. If you'd like a bargraph, just append `&type=bar` to the request URI.
+
 ### /subscribers/graph  ###
 
 The `/subscribers/graph` endpoint returns a graph with subscriber counts for one or multiple feeds from URI.LV. To use it, just add a Graph panel to your status board an point it to:
 
     http://your-app.herokuapp.com/subscribers/graph?api_key=<your-api-key>&token=<your-api-token>&feed1=<your-first-feed-name>&feed2=<your-second-feed-name>
+
+For a single page it will display more detailed statistiks (grader, other, direct) and for multiple pages it will only display the total subscribers. As a default the graph will be displayed as a linegraph. If you'd like a bargraph, just append `&type=bar` to the request URI.
 
 ### /subscribers/table  ###
 
