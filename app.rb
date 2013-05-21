@@ -13,14 +13,14 @@ end
 
 # Traffic with gaug.es
 get '/traffic' do
-  api_key = params[:api_key]
+  type = params[:type] || "line"
   gauges_params = params.select { |k, v| k.include?("page") }
 
   graph = {
     graph: {
       title: 'Traffic',
       total: true,
-      type: "line",
+      type: type,
       refreshEveryNSeconds: 300,
       datasequences: [
   
@@ -30,10 +30,10 @@ get '/traffic' do
 
   gauges_params.each do |key, gauge_id|
     gauge   = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}",
-                              "X-Gauges-Token" => api_key).read)["gauge"]
+                              "X-Gauges-Token" => params[:api_key]).read)["gauge"]
 
     traffic = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}/traffic",
-                              "X-Gauges-Token" => api_key).read)["traffic"]
+                              "X-Gauges-Token" => params[:api_key]).read)["traffic"]
 
     if gauges_params.size == 1
       views = { title: "Views", datapoints: [] }
@@ -66,8 +66,7 @@ end
 
 # Subscriber graph with URI.LV
 get '/subscribers/graph' do
-  api_key = params[:api_key]
-  token = params[:token]
+  type = params[:type] || "line"
   feed_params = params.select { |k, v| k.include?("feed") }
 
   uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
@@ -75,7 +74,7 @@ get '/subscribers/graph' do
   graph = {
     graph: {
       title: 'Subscriber',
-      type: "line",
+      type: type,
       refreshEveryNSeconds: 3600,
       datasequences: [
   
@@ -84,7 +83,7 @@ get '/subscribers/graph' do
   }
 
   feed_params.each do |key, feed|
-    parameters = { :key => api_key, :token => token, :feed => feed }
+    parameters = { :key => params[:api_key], :token => params[:token], :feed => feed }
     uri.query = URI.encode_www_form(parameters)
     stats = MultiJson.load(uri.open.read)["stats"].reverse
     if feed_params.size == 1
@@ -130,15 +129,13 @@ end
 
 # Subscriber count with URI.LV
 get '/subscribers/count' do
-  api_key = params[:api_key]
-  token = params[:token]
   feed_params = params.select { |k, v| k.include?("feed") }
 
   uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
   feeds = []
 
   feed_params.each do |key, feed|
-    parameters = { :key => api_key, :token => token, :feed => feed }
+    parameters = { :key => params[:api_key], :token => params[:token], :feed => feed }
     uri.query = URI.encode_www_form(parameters)
     stats = MultiJson.load(uri.open.read)["stats"].first
     subscribers = stats['greader'] + stats['other'] + stats['direct']
