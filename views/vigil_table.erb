@@ -1,7 +1,13 @@
 <table>
 <% @pages.each do |page| %>
   <tr>
-    <td class="status"><img src="<%= page[:status] %>"></td>
+    <td class="status">
+      <% if page[:status] == "200" %>
+        <img src="/images/up.png">
+      <% else %>
+        <img src="/images/down.png">
+      <% end %>
+    </td>
     <td class="name"><%= page[:name] %></td>
     <td class="time"><%= page[:time] %></td>
     <td class="speed"><%= page[:speed] %></td>

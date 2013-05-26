@@ -169,7 +169,7 @@ get '/vigil/table' do
   items = @return.css("tr")
   items.each do |item|
     name = item.at_css("td.name").text
-    status = item.at_css("td.status img")['src']
+    status = item.at_css("td.status-code").text
     time = item.at_css("td.total-time").text
     speed = item.at_css("td.speed").text
 
