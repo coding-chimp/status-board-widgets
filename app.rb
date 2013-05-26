@@ -5,6 +5,7 @@ require 'multi_json'
 require 'open-uri'
 require 'titleize'
 require 'date'
+require 'nokogiri'
 
 # Root
 get '/' do
@@ -153,4 +154,28 @@ end
 get '/subscribers/table' do
   @uri = "/subscribers/count?" + URI.encode_www_form(params)
   erb :subscribers
+end
+
+get '/vigil' do
+  @uri = "/vigil/table?" + URI.encode_www_form(params)
+  erb :vigil
+end
+
+get '/vigil/table' do
+  @pages = []
+
+  @return = Nokogiri::HTML(open("http://api.vigil-app.com/v1/user/#{params[:user]}/host?populateHostMonitors&output=html"))
+
+  items = @return.css("tr")
+  items.each do |item|
+    name = item.at_css("td.name").text
+    status = item.at_css("td.status img")['src']
+    time = item.at_css("td.total-time").text
+    speed = item.at_css("td.speed").text
+
+    page = {name: name, status: status, time: time, speed: speed}
+    @pages << page
+  end
+
+  erb :vigil_table
 end

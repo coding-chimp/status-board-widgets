@@ -1,0 +1,10 @@
+<table>
+<% @pages.each do |page| %>
+  <tr>
+    <td class="status"><img src="<%= page[:status] %>"></td>
+    <td class="name"><%= page[:name] %></td>
+    <td class="time"><%= page[:time] %></td>
+    <td class="speed"><%= page[:speed] %></td>
+  </tr>
+<% end %>
+</table>
