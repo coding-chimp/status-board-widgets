@@ -1,2 +1,4 @@
 .DS_Store
 todo.taskpaper
+db/*.sqlite
+.env

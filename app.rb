@@ -1,4 +1,5 @@
 require 'sinatra'
+require "sinatra/activerecord"
 require 'sinatra/json'
 require 'sinatra/reloader' if development?
 require 'multi_json'
@@ -6,6 +7,12 @@ require 'open-uri'
 require 'titleize'
 require 'date'
 require 'nokogiri'
+
+require_relative "models/contribution"
+
+configure do
+  set :database_file, "config/database.yml"
+end
 
 # Root
 get '/' do
@@ -178,4 +185,17 @@ get '/vigil/table' do
   end
 
   erb :vigil_table
+end
+
+get '/streak' do
+  contributions = Contribution.order("date desc")
+  starting_date = Date.today 
+  if contributions.first.count == 0
+    starting_date -= 1
+    breaker = contributions.where(count: 0).second
+  else
+    breaker = contributions.where(count: 0).first
+  end
+  @streak = (starting_date - breaker.date).to_i
+  erb :streak
 end
