@@ -187,7 +187,11 @@ get '/vigil/table' do
   erb :vigil_table
 end
 
-get '/streak.?:format?' do |format|
+get '/streak' do
+  erb :streak
+end
+
+get '/streak/number' do
   contributions = Contribution.order("date desc")
   starting_date = Date.today 
   if contributions.first.count == 0
@@ -197,9 +201,6 @@ get '/streak.?:format?' do |format|
     breaker = contributions.where(count: 0).first
   end
   @streak = (starting_date - breaker.date).to_i
-  if format == 'text'
-    @streak.to_s
-  else
-    erb :streak
-  end
+
+  @streak.to_s
 end
