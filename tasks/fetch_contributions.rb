@@ -19,13 +19,16 @@ class FetchContributions
     json = JSON.parse(res)
 
     json.each do |action|
-      if action['type'] == "PushEvent" or action['type'] == "GistEvent"
-        date = Date.parse(action['created_at'])
-        if date == @today
-          @count += 1
-        else
-          break
+      date = Date.parse(action['created_at'])
+      if date == @today
+        case action['type']
+          when "PushEvent"
+            @count += action['payload']['size']
+          when "GistEvent"
+            @count += 1
         end
+      else
+        break
       end
     end
     write_contribution(@today, @count)
@@ -34,6 +37,7 @@ class FetchContributions
   def fetch_history
     @current_date = Date.today
     @count = 0
+    @increase = 0
 
     for page in 1..10 do
 
@@ -43,22 +47,29 @@ class FetchContributions
       json = JSON.parse(res)
 
       json.each do |action|
-        if action['type'] == "PushEvent" or action['type'] == "GistEvent"
-          date = Date.parse(action['created_at'])
-          if date == @current_date
-            @count += 1
-          elsif date == @current_date - 1            
-            write_contribution(@current_date, @count)
-            @current_date = date
-            @count = 1
+        case action['type']
+          when "PushEvent"
+            @increase = action['payload']['size']
+          when "GistEvent"
+            @increase = 1
           else
-            distance = (@current_date - date) - 1
-            for n in 1..distance do
-              write_contribution(@current_date - n, 0)
-            end
-            @current_date = date
-            @count = 1
+            next
+        end
+
+        date = Date.parse(action['created_at'])
+        if date == @current_date
+          @count += @increase
+        elsif date == @current_date - 1            
+          write_contribution(@current_date, @count)
+          @current_date = date
+          @count = @increase
+        else
+          distance = (@current_date - date) - 1
+          for n in 1..distance do
+            write_contribution(@current_date - n, 0)
           end
+          @current_date = date
+          @count = @increase
         end
       end
 
