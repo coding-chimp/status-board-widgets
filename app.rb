@@ -40,8 +40,18 @@ get '/traffic' do
     gauge   = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}",
                               "X-Gauges-Token" => params[:api_key]).read)["gauge"]
 
-    traffic = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}/traffic",
+    date = Date.today - 30
+
+    traffic1 = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}/traffic?date=#{date}",
                               "X-Gauges-Token" => params[:api_key]).read)["traffic"]
+
+    traffic2 = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}/traffic",
+                              "X-Gauges-Token" => params[:api_key]).read)["traffic"]
+
+    traffic = traffic1 + traffic2
+    
+    ending = traffic.size - 1
+    beginning = ending - 30
 
     if gauges_params.size == 1
       views = { title: "Views", datapoints: [] }
@@ -49,7 +59,7 @@ get '/traffic' do
     else
       views = { title: gauge["title"], datapoints: [] }
     end
-    traffic.each do |entry|
+    traffic[beginning..ending].each do |entry|
       views[:datapoints] << {
         title: DateTime.parse(entry["date"]).strftime("%e.%-m."),
         value: entry["views"]
@@ -59,7 +69,7 @@ get '/traffic' do
     unless gauges_params.size > 1
 
       people = { title: "People", datapoints: [] }
-      traffic.each do |entry|
+      traffic[beginning..ending].each do |entry|
         people[:datapoints] << {
           title: DateTime.parse(entry["date"]).strftime("%e.%-m."),
           value: entry["people"]
