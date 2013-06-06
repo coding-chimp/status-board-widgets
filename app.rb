@@ -7,6 +7,7 @@ require 'open-uri'
 require 'titleize'
 require 'date'
 require 'nokogiri'
+require 'octokit'
 
 require_relative "models/contribution"
 
@@ -156,7 +157,7 @@ get '/subscribers/count' do
     parameters = { :key => params[:api_key], :token => params[:token], :feed => feed }
     uri.query = URI.encode_www_form(parameters)
     stats = MultiJson.load(uri.open.read)["stats"].first
-    subscribers = stats['greader'] + stats['other'] + stats['direct']
+    subscribers = stats['greader'] + stats['other']
     feeds << {
       name: feed.titleize.gsub('-', ' '),
       count: subscribers
@@ -196,6 +197,18 @@ get '/vigil/table' do
 
   erb :vigil_table
 end
+
+#get '/github' do
+#  erb :github
+#end
+
+get '/github/data' do
+  username = ENV['GITHUB_USERNAME']
+  token = ENV['GITHUB_TOKEN']
+  client = Octokit::Client.new(:login => username, :oauth_token => token)
+  @user = client.user
+  @notifications = client.notifications.count
+end 
 
 get '/streak' do
   erb :streak
