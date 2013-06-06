@@ -207,4 +207,4 @@ get '/github/data' do
   client = Octokit::Client.new(:login => username, :oauth_token => token)
   @user = client.user
   @notifications = client.notifications.count
-end 
+end
