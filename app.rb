@@ -205,10 +205,16 @@ end
 
 get '/github/data' do
   if params['username']
-    @user = Octokit.user params[:username]
+    if params['token']
+      client = Octokit::Client.new(login: params[:username], oauth_token: params[:token])
+      @user = client.user
+      @notifications = client.notifications.count  
+    else
+      @user = Octokit.user params[:username]
+    end
     erb :github_data
   elsif ENV['GITHUB_USERNAME']
-    client = Octokit::Client.new(:login => ENV['GITHUB_USERNAME'], :oauth_token => ENV['GITHUB_TOKEN'])
+    client = Octokit::Client.new(login: ENV['GITHUB_USERNAME'], oauth_token: ENV['GITHUB_TOKEN'])
     @user = client.user
     @notifications = client.notifications.count
     erb :github_data
