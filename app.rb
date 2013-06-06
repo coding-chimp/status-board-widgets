@@ -197,14 +197,16 @@ get '/vigil/table' do
   erb :vigil_table
 end
 
-#get '/github' do
-#  erb :github
-#end
+get '/streak/number' do
+  contributions = Contribution.order("date desc")
+  starting_date = Date.today 
+  if contributions.first.count == 0
+    starting_date -= 1
+    breaker = contributions.where(count: 0).second
+  else
+    breaker = contributions.where(count: 0).first
+  end
+  @streak = (starting_date - breaker.date).to_i
 
-get '/github/data' do
-  username = ENV['GITHUB_USERNAME']
-  token = ENV['GITHUB_TOKEN']
-  client = Octokit::Client.new(:login => username, :oauth_token => token)
-  @user = client.user
-  @notifications = client.notifications.count
+  @streak.to_s
 end
