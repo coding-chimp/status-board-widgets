@@ -156,7 +156,7 @@ get '/subscribers/count' do
     parameters = { :key => params[:api_key], :token => params[:token], :feed => feed }
     uri.query = URI.encode_www_form(parameters)
     stats = MultiJson.load(uri.open.read)["stats"].first
-    subscribers = stats['greader'] + stats['other'] + stats['direct']
+    subscribers = stats['greader'] + stats['other']
     feeds << {
       name: feed.titleize.gsub('-', ' '),
       count: subscribers
@@ -197,20 +197,14 @@ get '/vigil/table' do
   erb :vigil_table
 end
 
-get '/streak' do
-  erb :streak
-end
+#get '/github' do
+#  erb :github
+#end
 
-get '/streak/number' do
-  contributions = Contribution.order("date desc")
-  starting_date = Date.today 
-  if contributions.first.count == 0
-    starting_date -= 1
-    breaker = contributions.where(count: 0).second
-  else
-    breaker = contributions.where(count: 0).first
-  end
-  @streak = (starting_date - breaker.date).to_i
-
-  @streak.to_s
-end
+get '/github/data' do
+  username = ENV['GITHUB_USERNAME']
+  token = ENV['GITHUB_TOKEN']
+  client = Octokit::Client.new(:login => username, :oauth_token => token)
+  @user = client.user
+  @notifications = client.notifications.count
+end 
