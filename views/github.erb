@@ -69,7 +69,7 @@
             document.getElementById('github_container').innerHTML = req.responseText
           }
         }
-        req.open("GET", '/github/data', true);
+        req.open("GET", '<%= @uri %>', true);
         req.send(null);
     }
 

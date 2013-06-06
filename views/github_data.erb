@@ -3,4 +3,6 @@
 <p>Following <span><%= @user.following %></span></p>
 <p>Public Repos <span><%= @user.public_repos %></span></p>
 <p>Public Gists <span><%= @user.public_gists %></span></p>
+<% if @notifications %>
 <p>Notifications <span><%= @notifications %></span></p>
+<% end %>

@@ -199,16 +199,22 @@ get '/vigil/table' do
 end
 
 get '/github' do
+  @uri = "/github/data?" + URI.encode_www_form(params)
   erb :github
 end
 
 get '/github/data' do
-  username = ENV['GITHUB_USERNAME']
-  token = ENV['GITHUB_TOKEN']
-  client = Octokit::Client.new(:login => username, :oauth_token => token)
-  @user = client.user
-  @notifications = client.notifications.count
-  erb :github_data
+  if params['username']
+    @user = Octokit.user params[:username]
+    erb :github_data
+  elsif ENV['GITHUB_USERNAME']
+    client = Octokit::Client.new(:login => ENV['GITHUB_USERNAME'], :oauth_token => ENV['GITHUB_TOKEN'])
+    @user = client.user
+    @notifications = client.notifications.count
+    erb :github_data
+  else
+    "No username given."
+  end
 end 
   
 get '/streak' do
