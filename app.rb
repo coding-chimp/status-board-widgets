@@ -7,6 +7,7 @@ require 'open-uri'
 require 'titleize'
 require 'date'
 require 'nokogiri'
+require 'octokit'
 
 require_relative "models/contribution"
 
@@ -195,6 +196,23 @@ get '/vigil/table' do
   end
 
   erb :vigil_table
+end
+
+get '/github' do
+  erb :github
+end
+
+get '/github/data' do
+  username = ENV['GITHUB_USERNAME']
+  token = ENV['GITHUB_TOKEN']
+  client = Octokit::Client.new(:login => username, :oauth_token => token)
+  @user = client.user
+  @notifications = client.notifications.count
+  erb :github_data
+end 
+  
+get '/streak' do
+  erb :streak
 end
 
 get '/streak/number' do

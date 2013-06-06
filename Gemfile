@@ -10,6 +10,7 @@ gem 'json', '~> 1.8.0'
 gem 'open-uri-cached'
 gem 'titleize'
 gem 'nokogiri'
+gem 'octokit'
 
 group :production do
   gem 'pg'

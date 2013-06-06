@@ -12,18 +12,33 @@ GEM
     activesupport (3.2.13)
       i18n (= 0.6.1)
       multi_json (~> 1.0)
+    addressable (2.3.4)
     arel (3.0.2)
     backports (3.3.0)
     builder (3.0.4)
     dotenv (0.7.0)
     eventmachine (1.0.3)
+    faraday (0.8.5)
+      multipart-post (~> 1.1)
+    faraday_middleware (0.9.0)
+      faraday (>= 0.7.4, < 0.9)
     foreman (0.63.0)
       dotenv (>= 0.7)
       thor (>= 0.13.6)
+    hashie (2.0.5)
     i18n (0.6.1)
     json (1.8.0)
     multi_json (1.7.3)
+    multipart-post (1.1.5)
+    netrc (0.7.7)
     nokogiri (1.5.9)
+    octokit (1.24.0)
+      addressable (~> 2.2)
+      faraday (~> 0.8)
+      faraday_middleware (~> 0.9)
+      hashie (~> 2.0)
+      multi_json (~> 1.3)
+      netrc (~> 0.7.7)
     open-uri-cached (0.0.5)
     pg (0.15.1)
     rack (1.5.2)
@@ -60,6 +75,7 @@ DEPENDENCIES
   json (~> 1.8.0)
   multi_json
   nokogiri
+  octokit
   open-uri-cached
   pg
   rake
