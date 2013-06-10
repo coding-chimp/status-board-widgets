@@ -136,7 +136,7 @@ get '/subscribers/graph' do
       stats.each do |entry|
         subscribers[:datapoints] << {
           title: Time.at(entry["day"]).strftime("%e.%-m."),
-          value: entry['greader'] + entry['other'] + entry['direct']
+          value: entry['greader']
         }
       end
       graph[:graph][:datasequences] << subscribers
@@ -157,10 +157,9 @@ get '/subscribers/count' do
     parameters = { :key => params[:api_key], :token => params[:token], :feed => feed }
     uri.query = URI.encode_www_form(parameters)
     stats = MultiJson.load(uri.open.read)["stats"].first
-    subscribers = stats['greader'] + stats['other']
     feeds << {
       name: feed.titleize.gsub('-', ' '),
-      count: subscribers
+      count: stats['greader']
     }
 
   end
