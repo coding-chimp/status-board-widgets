@@ -1,6 +1,6 @@
-class StatusBoardWidgets < Sinatra::Base
+class TrafficController < StatusBoardWidgets
   # Traffic graph with gaug.es
-  get '/traffic' do
+  get '/' do
     type = params[:type] || "line"
     gauges_params = params.select { |k, v| k.include?("page") }
   
@@ -61,4 +61,5 @@ class StatusBoardWidgets < Sinatra::Base
     
     json graph
   end
+
 end

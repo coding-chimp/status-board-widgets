@@ -15,7 +15,7 @@ If you [created an Heroku account][8] and have the [Heroku Toolbelt][9] installe
 
 ## Additional Configuration  ##
 
-If you want to use the `/streak` endpoint, there are a few more things you need to do.
+If you want to use the `/github/streak` endpoint, there are a few more things you need to do.
 First you'll need to add a database:
 
     $ heroku addons:add heroku-postgresql:dev
@@ -94,13 +94,13 @@ or add your username and API token to your Heroku environment like discribed in 
 
     http://your-app.herokuapp.com/github
 
-If you set your app up for using the `/streak` endpoint, you can, of course, just use the last url.
+If you set your app up for using the `/github/streak` endpoint, you can, of course, just use the last url.
 
-### /streak ###
+### /github/streak ###
 
-The `/streak` endpoint shows you your current streak of days you commited code to GitHub. To use this endpoint, you have to set the app up like described in [additional configuration][12]. After that, you can just add a DIY panel to your status board and point it to:
+The `/github/streak` endpoint shows you your current streak of days you commited code to GitHub. To use this endpoint, you have to set the app up like described in [additional configuration][12]. After that, you can just add a DIY panel to your status board and point it to:
 
-    http://your-app.herokuapp.com/streak
+    http://your-app.herokuapp.com/github/streak
 
 ## License ##
 

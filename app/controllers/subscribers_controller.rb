@@ -1,6 +1,8 @@
-class StatusBoardWidgets < Sinatra::Base
+class SubscribersController < StatusBoardWidgets
+  set :views, "app/views/subscribers"
+
   # Subscriber graph with URI.LV
-  get '/subscribers/graph' do
+  get '/graph' do
     type = params[:type] || "line"
     feed_params = params.select { |k, v| k.include?("feed") }
   
@@ -63,7 +65,7 @@ class StatusBoardWidgets < Sinatra::Base
   end
   
   # Subscriber count with URI.LV
-  get '/subscribers/count' do
+  get '/count' do
     feed_params = params.select { |k, v| k.include?("feed") }
   
     uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
@@ -81,11 +83,11 @@ class StatusBoardWidgets < Sinatra::Base
     end
   
     @feeds = feeds.sort_by { |k| k[:count] }.reverse
-    erb :'subscribers/count'
+    erb :count
   end
   
-  get '/subscribers/table' do
+  get '/table' do
     @uri = "/subscribers/count?" + URI.encode_www_form(params)
-    erb :'subscribers/index'
+    erb :index
   end
 end

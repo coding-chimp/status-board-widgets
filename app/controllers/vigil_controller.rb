@@ -1,10 +1,12 @@
-class StatusBoardWidgets < Sinatra::Base
-  get '/vigil' do
+class VigilController < StatusBoardWidgets
+  set :views, "app/views/vigil"
+
+  get '/' do
     @uri = "/vigil/table?" + URI.encode_www_form(params)
-    erb :'vigil/index'
+    erb :index
   end
   
-  get '/vigil/table' do
+  get '/table' do
     @pages = []
   
     @return = Nokogiri::HTML(open("http://api.vigil-app.com/v1/user/#{params[:user]}/host?populateHostMonitors&output=html"))
@@ -20,6 +22,6 @@ class StatusBoardWidgets < Sinatra::Base
       @pages << page
     end
   
-    erb :'vigil/table'
+    erb :table
   end
 end

@@ -1,10 +1,14 @@
-class StatusBoardWidgets < Sinatra::Base
-  get '/github' do
+require_relative "../models/contribution"
+
+class GithubController < StatusBoardWidgets
+  set :views, "app/views/github"
+
+  get '/' do
     @uri = "/github/data?" + URI.encode_www_form(params)
-    erb :'github/index'
+    erb :index
   end
   
-  get '/github/data' do
+  get '/data' do
     if params['username']
       if params['token']
         client = Octokit::Client.new(login: params[:username], oauth_token: params[:token])
@@ -13,12 +17,12 @@ class StatusBoardWidgets < Sinatra::Base
       else
         @user = Octokit.user params[:username]
       end
-      erb :'github/data'
+      erb :data
     elsif ENV['GITHUB_USERNAME']
       client = Octokit::Client.new(login: ENV['GITHUB_USERNAME'], oauth_token: ENV['GITHUB_TOKEN'])
       @user = client.user
       @notifications = client.notifications.count
-      erb :'github/data'
+      erb :data
     else
       "No username given."
     end
