@@ -4,7 +4,7 @@ require "bundler"
 Bundler.require
 
 require "./app"
-require_relative "./tasks/fetch_contributions"
+require_relative "./app/tasks/fetch_contributions"
 
 desc "Fetch todays commits."
 task :fetch_today do

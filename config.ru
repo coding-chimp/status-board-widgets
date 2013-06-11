@@ -5,4 +5,4 @@ Bundler.require
 
 require './app'
 
-run Sinatra::Application
+run StatusBoardWidgets
