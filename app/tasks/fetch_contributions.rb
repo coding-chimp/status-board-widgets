@@ -1,5 +1,4 @@
-require 'open-uri'
-require 'multi_json'
+require 'octokit'
 
 require_relative "../models/contribution"
 
@@ -13,17 +12,15 @@ class FetchContributions
     @today = Date.today
     @count = 0
 
-    res = open("https://api.github.com/users/#{@user}/events",
-               'Authorization' => "token #{@token}").read
+    client = Octokit::Client.new(login: @user, oauth_token: @token)
+    events = client.user_events(@user)
 
-    json = JSON.parse(res)
-
-    json.each do |action|
-      date = Date.parse(action['created_at'])
+    events.each do |event|
+      date = Date.parse(event.created_at)
       if date == @today
-        case action['type']
+        case event.type
           when "PushEvent"
-            @count += action['payload']['size']
+            @count += event.payload['size']
           when "GistEvent"
             @count += 1
         end
@@ -38,25 +35,22 @@ class FetchContributions
     @current_date = Date.today
     @count = 0
     @increase = 0
+    @client = Octokit::Client.new(login: @user, oauth_token: @token)
 
     for page in 1..10 do
+      events = @client.user_events(@user, page: page)
 
-      res = open("https://api.github.com/users/#{@user}/events?page=#{page}",
-                 'Authorization' => "token #{@token}").read
-
-      json = JSON.parse(res)
-
-      json.each do |action|
-        case action['type']
+      events.each do |event|
+        case event.type
           when "PushEvent"
-            @increase = action['payload']['size']
+            @increase = event.payload['size']
           when "GistEvent"
             @increase = 1
           else
             next
         end
 
-        date = Date.parse(action['created_at'])
+        date = Date.parse(event.created_at)
         if date == @current_date
           @count += @increase
         elsif date == @current_date - 1            
@@ -72,10 +66,8 @@ class FetchContributions
           @count = @increase
         end
       end
-
     end
     write_contribution(@current_date, @count)
-
   end
 
   private
