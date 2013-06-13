@@ -82,7 +82,8 @@
     function init()
     {
       // Change page background to black if the URL contains "localhost", for debugging while developing on your computer
-      if (document.location.hostname.indexOf("localhost") != -1)
+      if (document.location.hostname.indexOf("localhost") != -1 ||
+          document.location.hostname.indexOf(".dev") != -1 )
       {
         document.getElementById("streak_container").style.backgroundColor = 'black';
       }
