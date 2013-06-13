@@ -10,9 +10,7 @@ class TrafficController < StatusBoardWidgets
         total: true,
         type: type,
         refreshEveryNSeconds: 300,
-        datasequences: [
-    
-        ]
+        datasequences: []
       }
     }
   
@@ -24,42 +22,39 @@ class TrafficController < StatusBoardWidgets
   
       traffic1 = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}/traffic?date=#{date}",
                                 "X-Gauges-Token" => params[:api_key]).read)["traffic"]
-  
       traffic2 = MultiJson.load(open("https://secure.gaug.es/gauges/#{gauge_id}/traffic",
                                 "X-Gauges-Token" => params[:api_key]).read)["traffic"]
-  
       traffic = traffic1 + traffic2
       
       ending = traffic.size - 1
       beginning = ending - 30
   
       if gauges_params.size == 1
-        views = { title: "Views", datapoints: [] }
+        title = "Views"
         graph[:graph][:title] = gauge["title"]
-      else
-        views = { title: gauge["title"], datapoints: [] }
-      end
-      traffic[beginning..ending].each do |entry|
-        views[:datapoints] << {
-          title: DateTime.parse(entry["date"]).strftime("%e.%-m."),
-          value: entry["views"]
-        }
-      end
-      graph[:graph][:datasequences] << views
-      unless gauges_params.size > 1
-  
-        people = { title: "People", datapoints: [] }
-        traffic[beginning..ending].each do |entry|
-          people[:datapoints] << {
-            title: DateTime.parse(entry["date"]).strftime("%e.%-m."),
-            value: entry["people"]
-          }
-        end
+        people = { title: "People", datapoints: create_datapoints(traffic, "people", beginning, ending) }
         graph[:graph][:datasequences] << people
+      else
+        title = gauge["title"]
       end
+
+      views = { title: title, datapoints: create_datapoints(traffic, "views", beginning, ending) }
+      graph[:graph][:datasequences] << views
     end
     
     json graph
   end
 
+  private
+
+  def create_datapoints(traffic, type, beginning, ending)
+    datapoints = []
+    traffic[beginning..ending].each do |entry|
+      datapoints << {
+        title: DateTime.parse(entry["date"]).strftime("%e.%-m."),
+        value: entry[type]
+      }
+    end
+    datapoints
+  end
 end
