@@ -4,7 +4,7 @@ class SubscribersController < StatusBoardWidgets
   # Subscriber graph with URI.LV
   get '/graph' do
     type = params[:type] || "line"
-    feed_params = params.select { |k, v| k.include?("feed") }
+    feed_params = feed_params(params)
     graph = create_graph(feed_params, type, params[:api_key], params[:token])  
     json graph
   end
@@ -17,12 +17,16 @@ class SubscribersController < StatusBoardWidgets
 
   # Subscriber count with URI.LV
   get '/count' do
-    feed_params = params.select { |k, v| k.include?("feed") }
+    feed_params = feed_params(params)
     @feeds = create_counts(feed_params, params[:api_key], params[:token])
     erb :count
   end
 
   private
+
+  def feed_params(params)
+    params.select { |k, v| k.include?("feed") }
+  end
 
   def create_graph(feed_params, type, api_key, token)
     graph = {
