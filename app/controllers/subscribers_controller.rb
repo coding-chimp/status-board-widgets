@@ -40,18 +40,15 @@ class SubscribersController < StatusBoardWidgets
       if feed_params.size == 1
         graph[:graph][:title] = feed.titleize.gsub('-', ' ')
 
-        greader = { title: "Google Reader", datapoints: create_datapoints(stats, 'greader') }
-        graph[:graph][:datasequences] << greader
-
-        other = { title: "Other", datapoints: create_datapoints(stats, 'other') }
-        graph[:graph][:datasequences] << other
-
-        direct = { title: "Direct", datapoints: create_datapoints(stats, 'direct') }
-        graph[:graph][:datasequences] << direct
-      
+        graph[:graph][:datasequences] << { title: "Google Reader",
+                                           datapoints: create_datapoints(stats, 'greader') }
+        graph[:graph][:datasequences] << { title: "Other",
+                                           datapoints: create_datapoints(stats, 'other') }
+        graph[:graph][:datasequences] << { title: "Direct",
+                                           datapoints: create_datapoints(stats, 'direct') }
       else
-        subscribers = { title: feed.titleize.gsub('-', ' '), datapoints: create_datapoints(stats, 'greader') }
-        graph[:graph][:datasequences] << subscribers
+        graph[:graph][:datasequences] << { title: feed.titleize.gsub('-', ' '),
+                                           datapoints: create_datapoints(stats, 'greader') }
       end
     end
     graph
