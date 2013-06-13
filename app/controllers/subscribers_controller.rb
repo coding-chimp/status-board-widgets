@@ -5,7 +5,26 @@ class SubscribersController < StatusBoardWidgets
   get '/graph' do
     type = params[:type] || "line"
     feed_params = params.select { |k, v| k.include?("feed") }
-    
+    graph = create_graph(feed_params, type, params[:api_key], params[:token])  
+    json graph
+  end
+  
+  # Subscriber table with URI.LV
+  get '/table' do
+    @uri = "/subscribers/count?" + URI.encode_www_form(params)
+    erb :index
+  end
+
+  # Subscriber count with URI.LV
+  get '/count' do
+    feed_params = params.select { |k, v| k.include?("feed") }
+    @feeds = create_counts(feed_params, params[:api_key], params[:token])
+    erb :count
+  end
+
+  private
+
+  def create_graph(feed_params, type, api_key, token)
     graph = {
       graph: {
         title: 'Subscriber',
@@ -16,7 +35,7 @@ class SubscribersController < StatusBoardWidgets
     }
   
     feed_params.each do |key, feed|
-      stats = fetch_subscribers(params[:api_key], params[:token], feed, true)
+      stats = fetch_subscribers(api_key, token, feed, true)
       
       if feed_params.size == 1
         graph[:graph][:title] = feed.titleize.gsub('-', ' ')
@@ -35,34 +54,20 @@ class SubscribersController < StatusBoardWidgets
         graph[:graph][:datasequences] << subscribers
       end
     end
-  
-    json graph
-  end
-  
-  # Subscriber table with URI.LV
-  get '/table' do
-    @uri = "/subscribers/count?" + URI.encode_www_form(params)
-    erb :index
+    graph
   end
 
-  # Subscriber count with URI.LV
-  get '/count' do
-    @feeds = []
-    feed_params = params.select { |k, v| k.include?("feed") }
-  
+  def create_counts(feed_params, api_key, token)
+    counts = []
     feed_params.each do |key, feed|
       stats = fetch_subscribers(params[:api_key], params[:token], feed)
-      @feeds << {
+      counts << {
         name: feed.titleize.gsub('-', ' '),
         count: stats['greader']
       }
     end
-  
-    @feeds = @feeds.sort_by { |k| k[:count] }.reverse
-    erb :count
+    counts = counts.sort_by { |k| k[:count] }.reverse
   end
-
-  private
 
   def fetch_subscribers(key, token, feed, history=false)
     uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
