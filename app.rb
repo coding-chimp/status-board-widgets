@@ -11,6 +11,7 @@ require 'octokit'
 
 class StatusBoardWidgets < Sinatra::Base
   configure do
+    enable :logging
     set :database_file, "config/database.yml"
     set :public_dir, "app/public"
     set :root, File.dirname(__FILE__)
