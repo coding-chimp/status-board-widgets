@@ -5,7 +5,7 @@ class GithubController < StatusBoardWidgets
 
   get '/' do
     @uri = "/github/data"
-    @uri = @uri + "?" + URI.encode_www_form(params) if params
+    @uri = @uri + "?" + URI.encode_www_form(params) unless params.nil?
     erb :index
   end
   
