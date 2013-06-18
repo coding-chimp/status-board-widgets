@@ -31,7 +31,7 @@ class SubscribersController < StatusBoardWidgets
   def create_graph(feed_params, type, api_key, token)
     graph = {
       graph: {
-        title: 'Subscriber',
+        title: 'Subscribers',
         type: type,
         refreshEveryNSeconds: 3600,
         datasequences: []
