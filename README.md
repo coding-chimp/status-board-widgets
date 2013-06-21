@@ -4,7 +4,7 @@ This [Sinatra][1] app can be used to pull traffic analytics from GitHub's [Gauge
 
 ## Configuration ##
 
-The easiest (and free) way to deploy this app is [Heroku][7], for which instrauctions are provided, but Status Board Widgets can be deployed anywhere that supports Ruby.
+The easiest (and free) way to deploy this app is [Heroku][7], for which instructions are provided, but Status Board Widgets can be deployed anywhere that supports Ruby.
 
 If you [created an Heroku account][8] and have the [Heroku Toolbelt][9] installed, all you need to do is:
 
