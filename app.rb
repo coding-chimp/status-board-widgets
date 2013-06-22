@@ -8,6 +8,7 @@ require 'titleize'
 require 'date'
 require 'nokogiri'
 require 'octokit'
+require 'htmlentities'
 
 class StatusBoardWidgets < Sinatra::Base
   configure do

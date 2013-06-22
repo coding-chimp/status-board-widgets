@@ -1,6 +1,6 @@
 # Status Board Widgets #
 
-This [Sinatra][1] app can be used to pull traffic analytics from GitHub's [Gauges][2], feed analytics from [URI.LV][3], website monitoring from [Vigil][4] and user informations from [GitHub][5] and display them on your [Status Board][6].
+This [Sinatra][1] app can be used to pull traffic analytics from GitHub's [Gauges][2], feed analytics from [FeedPress][3], website monitoring from [Vigil][4] and user informations from [GitHub][5] and display them on your [Status Board][6].
 
 ## Configuration ##
 
@@ -56,15 +56,19 @@ For a single gauge it will display views + people and for multiple gauges it wil
 
 ### /subscribers/graph  ###
 
-The `/subscribers/graph` endpoint returns a graph with subscriber counts for one or multiple feeds from URI.LV. To use it, just add a Graph panel to your status board an point it to:
+The `/subscribers/graph` endpoint returns a graph with subscriber counts for one or multiple feeds from FeedPress. To use it, just add a Graph panel to your status board an point it to:
 
     http://your-app.herokuapp.com/subscribers/graph?api_key=<your-api-key>&token=<your-api-token>&feed1=<your-first-feed-name>&feed2=<your-second-feed-name>
 
-For a single page it will display more detailed statistiks (grader, other, direct) and for multiple pages it will only display the total subscribers. As a default the graph will be displayed as a linegraph. If you'd like a bargraph, just append `&type=bar` to the request URI.
+For a single page it will display more detailed statistiks (greader, other, direct) and for multiple pages it will only display the total subscribers.
+
+As a default the graph will be displayed as a linegraph. If you'd like a bargraph, just append `&type=bar` to the request URI.
+
+The default date format is `day.month` (eg. `21.6.`). If you instead want your dates to be formatted as `month–day` (eg. `6–21`), just append `&dateformat=us` to the URI Request.
 
 ### /subscribers/table  ###
 
-The `/subscribers/table` endpoint returns a table with subscriber counts for one or multiple feeds from URI.LV. To use it, just add a DIY panel to your status board an point it to:
+The `/subscribers/table` endpoint returns a table with subscriber counts for one or multiple feeds from FeedPress. To use it, just add a DIY panel to your status board an point it to:
 
     http://your-app.herokuapp.com/subscribers/table?api_key=<your-api-key>&token=<your-api-token>&feed1=<your-first-feed-name>&feed2=<your-second-feed-name>
 
@@ -108,7 +112,7 @@ This project is licensed under the terms of the MIT License.
 
 [1]: http://www.sinatrarb.com
 [2]: http://get.gaug.es
-[3]: http://uri.lv
+[3]: http://feedpress.it
 [4]: http://vigil-app.com
 [5]: http://github.com
 [6]: http://panic.com/statusboard/

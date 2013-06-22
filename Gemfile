@@ -11,6 +11,7 @@ gem 'open-uri-cached'
 gem 'titleize'
 gem 'nokogiri'
 gem 'octokit'
+gem 'htmlentities'
 
 group :production do
   gem 'pg'

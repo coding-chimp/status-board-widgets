@@ -4,8 +4,9 @@ class SubscribersController < StatusBoardWidgets
   # Subscriber graph with URI.LV
   get '/graph' do
     type = params[:type] || "line"
+    dateformat = params[:dateformat] || "de"
     feed_params = feed_params(params)
-    graph = create_graph(feed_params, type, params[:api_key], params[:token])  
+    graph = create_graph(feed_params, type, params[:api_key], params[:token], dateformat)  
     json graph
   end
   
@@ -28,7 +29,7 @@ class SubscribersController < StatusBoardWidgets
     params.select { |k, v| k.include?("feed") }
   end
 
-  def create_graph(feed_params, type, api_key, token)
+  def create_graph(feed_params, type, api_key, token, dateformat)
     graph = {
       graph: {
         title: 'Subscribers',
@@ -45,14 +46,14 @@ class SubscribersController < StatusBoardWidgets
         graph[:graph][:title] = feed.titleize.gsub('-', ' ')
 
         graph[:graph][:datasequences] << { title: "Google Reader",
-                                           datapoints: create_datapoints(stats, 'greader') }
+                                           datapoints: create_datapoints(stats, 'greader', dateformat) }
         graph[:graph][:datasequences] << { title: "Other",
-                                           datapoints: create_datapoints(stats, 'other') }
+                                           datapoints: create_datapoints(stats, 'other', dateformat) }
         graph[:graph][:datasequences] << { title: "Direct",
-                                           datapoints: create_datapoints(stats, 'direct') }
+                                           datapoints: create_datapoints(stats, 'direct', dateformat) }
       else
         graph[:graph][:datasequences] << { title: feed.titleize.gsub('-', ' '),
-                                           datapoints: create_datapoints(stats, 'greader') }
+                                           datapoints: create_datapoints(stats, 'greader', dateformat) }
       end
     end
     graph
@@ -71,8 +72,8 @@ class SubscribersController < StatusBoardWidgets
   end
 
   def fetch_subscribers(key, token, feed, history=false)
-    uri = URI.parse("http://api.uri.lv/feeds/subscribers.json")
-    parameters = { :key => key, :token => token, :feed => feed }
+    uri = URI.parse("http://api.feedpress.it/feeds/subscribers.json")
+    parameters = { key: key, token: token, feed: feed }
     uri.query = URI.encode_www_form(parameters)
     if history
       MultiJson.load(uri.open.read)["stats"].reverse
@@ -81,14 +82,22 @@ class SubscribersController < StatusBoardWidgets
     end
   end
 
-  def create_datapoints(stats, type)
+  def create_datapoints(stats, type, dateformat)
     datapoints = []
     stats.each do |entry|
       datapoints << {
-        title: Time.at(entry["day"]).strftime("%e.%-m."),
-        value: entry['greader']
+        title: date(Time.at(entry["day"]), dateformat),
+        value: entry[type]
       }
     end
     datapoints
+  end
+
+  def date(date, format)
+    if format == "us"
+      HTMLEntities.new.decode(date.strftime("%-m&ndash;%-d"))
+    else
+      date.strftime("%-e.%-m.")
+    end
   end
 end
