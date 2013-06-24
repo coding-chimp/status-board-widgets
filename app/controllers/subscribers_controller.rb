@@ -86,7 +86,7 @@ class SubscribersController < StatusBoardWidgets
     datapoints = []
     stats.each do |entry|
       datapoints << {
-        title: date(Time.at(entry["day"]), dateformat),
+        title: date(Time.at(entry["day"]).in_time_zone('Paris'), dateformat),
         value: entry[type]
       }
     end
