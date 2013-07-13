@@ -10,6 +10,10 @@ class TrafficController < StatusBoardWidgets
         total: true,
         type: type,
         refreshEveryNSeconds: 300,
+        yAxis: {
+          minValue: params[:minValue],
+          maxValue: params[:maxValue]
+        },
         datasequences: []
       }
     }

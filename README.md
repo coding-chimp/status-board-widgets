@@ -64,7 +64,9 @@ For a single page it will display more detailed statistiks (greader, other, dire
 
 As a default the graph will be displayed as a linegraph. If you'd like a bargraph, just append `&type=bar` to the request URI.
 
-The default date format is `day.month` (eg. `21.6.`). If you instead want your dates to be formatted as `month–day` (eg. `6–21`), just append `&dateformat=us` to the URI Request.
+The default date format is `day.month` (eg. `21.6.`). If you instead want your dates to be formatted as `month–day` (eg. `6–21`), just append `&dateformat=us` to the URI request.
+
+You can also specify the min and max values of the y-axis by appending for example `&minValue=50` and `maxValue=150` to the URI request.
 
 ### /subscribers/table  ###
 
