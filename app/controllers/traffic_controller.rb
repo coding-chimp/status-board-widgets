@@ -3,6 +3,8 @@ class TrafficController < StatusBoardWidgets
   get '/' do
     type = params[:type] || "line"
     gauges_params = params.select { |k, v| k.include?("page") }
+    minValue = params[:minValue].nil? ? nil : params[:minValue].to_i
+    maxValue = params[:maxValue].nil? ? nil : params[:maxValue].to_i
   
     graph = {
       graph: {
@@ -11,8 +13,8 @@ class TrafficController < StatusBoardWidgets
         type: type,
         refreshEveryNSeconds: 300,
         yAxis: {
-          minValue: params[:minValue],
-          maxValue: params[:maxValue]
+          minValue: minValue,
+          maxValue: maxValue
         },
         datasequences: []
       }
