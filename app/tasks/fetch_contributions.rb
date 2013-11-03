@@ -12,7 +12,7 @@ class FetchContributions
     @today = Date.today
     @count = 0
 
-    client = Octokit::Client.new(login: @user, oauth_token: @token)
+    client = Octokit::Client.new(access_token: @token)
     events = client.user_events(@user)
 
     events.each do |event|
@@ -20,9 +20,9 @@ class FetchContributions
       if date == @today
         case event.type
           when "PushEvent"
-            @count += event.payload['size']
-          when "GistEvent"
-            @count += 1
+            @increase = event.payload['size']
+          when "CreateEvent", "IssuesEvent", "CommitCommentEvent", "PullRequestEvent"
+            @increase = 1
         end
       else
         break
@@ -35,7 +35,7 @@ class FetchContributions
     @current_date = Date.today
     @count = 0
     @increase = 0
-    @client = Octokit::Client.new(login: @user, oauth_token: @token)
+    @client = Octokit::Client.new(access_token: @token)
 
     for page in 1..10 do
       events = @client.user_events(@user, page: page)
@@ -44,7 +44,7 @@ class FetchContributions
         case event.type
           when "PushEvent"
             @increase = event.payload['size']
-          when "GistEvent"
+          when "CreateEvent", "IssuesEvent", "CommitCommentEvent", "PullRequestEvent"
             @increase = 1
           else
             next
@@ -53,7 +53,7 @@ class FetchContributions
         date = Date.parse(event.created_at)
         if date == @current_date
           @count += @increase
-        elsif date == @current_date - 1            
+        elsif date == @current_date - 1
           write_contribution(@current_date, @count)
           @current_date = date
           @count = @increase
