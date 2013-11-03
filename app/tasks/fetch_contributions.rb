@@ -16,7 +16,7 @@ class FetchContributions
     events = client.user_events(@user)
 
     events.each do |event|
-      date = Date.parse(event.created_at)
+      date = event.created_at.to_date
       if date == @today
         case event.type
           when "PushEvent"
@@ -50,7 +50,7 @@ class FetchContributions
             next
         end
 
-        date = Date.parse(event.created_at)
+        date = event.created_at.to_date
         if date == @current_date
           @count += @increase
         elsif date == @current_date - 1
