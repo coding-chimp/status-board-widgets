@@ -17,6 +17,7 @@ class VigilController < StatusBoardWidgets
       status = item.at_css("td.status-code").text
       time = item.at_css("td.total-time").text
       speed = item.at_css("td.speed").text.to_f.round(2)
+      speed = "#{speed} KB/s"
 
       page = {name: name, status: status, time: time, speed: speed}
       @pages << page
