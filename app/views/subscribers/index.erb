@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Cache-control" content="no-cache" />
+  <meta application-name="Feed Subscribers" data-allows-resizing="YES" data-default-size="5,5"
+    data-allows-scrolling="YES" />
   <title>Subscribers</title>
   <style type="text/css">
     @font-face {
@@ -64,7 +66,7 @@
     {
         var req = new XMLHttpRequest();
         console.log("Refreshing Count...");
-      
+
         req.onreadystatechange=function() {
           if (req.readyState==4 && req.status==200) {
             document.getElementById('subscribers_container').innerHTML = req.responseText
@@ -82,7 +84,7 @@
       {
         document.getElementById("subscribers_container").style.backgroundColor = 'black';
       }
-      
+
       refresh()
       var int=self.setInterval(function(){refresh()},1200000);
     }

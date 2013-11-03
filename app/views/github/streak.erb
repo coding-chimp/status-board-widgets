@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Cache-control" content="no-cache" />
+  <meta application-name="GitHub Streak" data-allows-resizing="YES" data-default-size="4,4"
+    data-min-size="4,4" data-allows-scrolling="NO" />
   <title>Streak</title>
   <style type="text/css">
     @font-face {
@@ -69,7 +71,7 @@
     {
         var req = new XMLHttpRequest();
         console.log("Refreshing Streak...");
-      
+
         req.onreadystatechange=function() {
           if (req.readyState==4 && req.status==200) {
             document.getElementById('days').innerText = req.responseText
@@ -87,7 +89,7 @@
       {
         document.getElementById("streak_container").style.backgroundColor = 'black';
       }
-      
+
       refresh()
       var int=self.setInterval(function(){refresh()},600000);
     }
