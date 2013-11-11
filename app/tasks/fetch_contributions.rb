@@ -20,9 +20,9 @@ class FetchContributions
       if date == @today
         case event.type
           when "PushEvent"
-            @increase = event.payload['size']
+            @count += event.payload['size']
           when "CreateEvent", "IssuesEvent", "CommitCommentEvent", "PullRequestEvent"
-            @increase = 1
+            @count += 1
         end
       else
         break
